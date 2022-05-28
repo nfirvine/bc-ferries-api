@@ -28,6 +28,7 @@ type Sailing struct {
 	OversizeFill int    `json:"oversizeFill"`
 	VesselName   string `json:"vesselName"`
 	VesselStatus string `json:"vesselStatus"`
+	QueueIndex   int    `json:"queueIndex"`
 }
 
 func MakeCurrentConditionsLink(departure, destination string) string {
@@ -117,6 +118,7 @@ func ScrapeCapacityRoutes() Response {
 				}
 
 				sailingIndex := 0
+				sailingQueueIndex := 0
 
 				// Get every row of table
 				table.Find("tr").Each(func(indextr int, row *goquery.Selection) {
@@ -162,6 +164,8 @@ func ScrapeCapacityRoutes() Response {
 										}
 									}
 								})
+								sailing.QueueIndex = sailingQueueIndex
+								sailingQueueIndex++
 							} else {
 								// Vessel name, car fill, oversize fill
 
