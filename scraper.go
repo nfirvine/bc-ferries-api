@@ -22,6 +22,7 @@ type Route struct {
 
 type Sailing struct {
 	Time         string `json:"time"`
+	Date         string `json:"date"`
 	Fill         int    `json:"fill"`
 	CarFill      int    `json:"carFill"`
 	OversizeFill int    `json:"oversizeFill"`
@@ -107,6 +108,7 @@ func ScrapeCapacityRoutes() Response {
 
 				sailing := Sailing{
 					Time:         "",
+					Date:         "",
 					Fill:         0,
 					CarFill:      0,
 					OversizeFill: 0,
@@ -131,6 +133,12 @@ func ScrapeCapacityRoutes() Response {
 								row.Find("td").Each(func(indextd int, tableData *goquery.Selection) {
 
 									if indextd == 0 {
+										d := time.Now()
+										if strings.Contains(tableData.Text(), "(Tomorrow)") {
+											d = d.AddDate(0, 0, 1)
+										}
+										sailing.Date = d.Format("2006-01-02")
+
 										// Time
 										time := strings.TrimSpace(tableData.Text())
 										if len(time) > 7 {
